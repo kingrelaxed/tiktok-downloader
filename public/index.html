@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download Video TikTok Tanpa Watermark HD 1080p — Xauzy Studio</title>
+<meta name="description" content="Download video TikTok tanpa watermark HD 1080p. Tempel link, lewati iklan, lalu simpan. Untuk postingan mode foto, tersedia Video Slideshow dan Foto Asli.">
+<style>
+  body{font-family:system-ui,Arial,sans-serif;max-width:720px;margin:0 auto;padding:24px 16px;background:#0b0e14;color:#f2f2f2}
+  h1{font-size:26px;margin:8px 0} p{color:#b8bcc7;line-height:1.6}
+  input,button{font-size:16px;padding:12px;border-radius:10px;border:1px solid #333}
+  input{width:100%;box-sizing:border-box;background:#161a24;color:#fff;margin:8px 0}
+  button{background:#7c5cff;color:#fff;border:none;cursor:pointer;width:100%;margin:6px 0}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .card{background:#161a24;border:1px solid #262b38;border-radius:14px;padding:16px;margin:14px 0}
+  .row{display:flex;gap:8px;align-items:center;justify-content:space-between;border-top:1px solid #262b38;padding:10px 0}
+  .row button{width:auto;padding:8px 14px}
+  .hidden{display:none}
+  .ad{background:#2a2113;border:1px dashed #c9a227;border-radius:10px;padding:14px;text-align:center;margin:12px 0}
+  .ok{color:#7dffa8}.err{color:#ff9a9a}.muted{color:#8a90a0;font-size:13px}
+  img.thumb{max-width:100%;border-radius:10px}
+  a.save{display:block;text-align:center;background:#22c55e;color:#06210f;font-weight:700;text-decoration:none;padding:14px;border-radius:10px;margin:8px 0}
+  a.ghost{display:block;text-align:center;border:1px solid #444;color:#ddd;text-decoration:none;padding:10px;border-radius:10px;margin:8px 0}
+</style>
+</head>
+<body>
+<h1>Download Video TikTok Tanpa Watermark</h1>
+<p>Tempel link TikTok, pilih kualitas, lewati iklan 15 detik, lalu ketuk <b>SIMPAN</b>. Video diambil oleh server, jadi download tidak bergantung pada koneksi browser kamu ke TikTok.</p>
+<input id="url" type="url" placeholder="Tempel link TikTok di sini, contoh: https://vt.tiktok.com/..." value="">
+<button id="fetchBtn" onclick="fetchInfo()">Download</button>
+<p class="muted">Contoh: <a href="#" onclick="document.getElementById('url').value='https://vt.tiktok.com/ZSsLpvjVm/';return false;">https://vt.tiktok.com/ZSsLpvjVm/</a></p>
+<div id="status" class="card hidden"></div>
+<div id="result" class="card hidden"></div>
+<div id="adModal" class="card hidden">
+  <div class="ad">
+    <b>Iklan (Sponsored)</b>
+    <p>Ini slot iklan placeholder. Setelah Adsterra aktif, tempel kode pop-up Adsterra di sini.</p>
+    <p id="countdown">Tunggu 15 detik…</p>
+  </div>
+  <button id="adDoneBtn" disabled onclick="adFinished()">Lanjut — Siapkan File</button>
+</div>
+<div id="saveArea" class="card hidden"></div>
+<script>
+let current = null;
+let pendingQuality = null;
+let pendingAction = null;
+function show(el, html){ el.classList.remove('hidden'); el.innerHTML = html; }
+function hide(el){ el.classList.add('hidden'); el.innerHTML=''; }
+async function fetchInfo(){
+  const url = document.getElementById('url').value.trim();
+  const st = document.getElementById('status');
+  if(!url){ show(st, '<span class="err">Tempel dulu link TikTok-nya.</span>'); return; }
+  show(st, 'Mengambil info video dari server…');
+  hide(document.getElementById('result')); hide(document.getElementById('saveArea'));
+  try{
+    const r = await fetch('/api/info?url=' + encodeURIComponent(url));
+    const d = await r.json();
+    if(!d.ok){ show(st, '<span class="err">' + esc(d.error || 'Gagal mengambil info.') + '</span>'); return; }
+    current = d;
+    let html = '';
+    if(d.cover) html += '<img class="thumb" src="' + esc(d.cover) + '" alt="cover">';
+    html += '<h3>' + esc(d.title || 'Video TikTok') + '</h3>';
+    html += '<p class="muted">@' + esc(d.author || 'pengguna_tiktok') + ' · ID ' + esc(d.id || '-') + ' · ' + (d.isPhoto ? 'Mode foto' : 'Video') + '</p>';
+    if(d.isPhoto){
+      html += '<p>Postingan ini <b>mode foto</b> (' + d.images.length + ' foto, lagu: ' + esc(d.musicTitle || '-') + ', ' + (d.musicDuration||0) + ' detik).</p>';
+      html += '<div class="row"><span><b>Video Slideshow</b><br><span class="muted">Foto + lagu asli jadi satu MP4</span></span><button onclick="startAd('slideshow')">Lihat Iklan, Lalu Buat Slideshow</button></div>';
+      d.images.forEach((_, i)=>{
+        html += '<div class="row"><span><b>Foto Asli ' + (i+1) + '</b> (JPG)</span><button onclick="startAd('photo', ' + i + ')">Lihat Iklan, Lalu Simpan Foto</button></div>';
+      });
+      html += '<div class="row"><span><b>Lagu Asli</b> (audio)</span><button onclick="startAd('music')">Lihat Iklan, Lalu Simpan Lagu</button></div>';
+    } else {
+      html += '<div class="row"><span><b>Full HD 1080p</b><br><span class="muted">Tanpa watermark' + (d.hdSize ? ' · ' + (d.hdSize/1048576).toFixed(1) + ' MB' : '') + '</span></span><button onclick="startAd('download', 'hd')">Lihat Iklan, Lalu Download HD</button></div>';
+      html += '<div class="row"><span><b>HD 720p</b><br><span class="muted">Tanpa watermark' + (d.size ? ' · ' + (d.size/1048576).toFixed(1) + ' MB' : '') + '</span></span><button onclick="startAd('download', 'sd')">Lihat Iklan, Lalu Download HD</button></div>';
+    }
+    show(st, '<span class="ok">Video ditemukan. Pilih kualitas di bawah ini.</span>');
+    show(document.getElementById('result'), html);
+  }catch(e){
+    show(st, '<span class="err">Server belum merespons. Periksa koneksimu lalu coba lagi.</span>');
+  }
+}
+function startAd(action, quality){
+  pendingAction = action; pendingQuality = quality;
+  const m = document.getElementById('adModal');
+  m.classList.remove('hidden');
+  const btn = document.getElementById('adDoneBtn');
+  btn.disabled = true;
+  let n = 15;
+  const cd = document.getElementById('countdown');
+  cd.textContent = 'Tunggu ' + n + ' detik…';
+  const t = setInterval(()=>{
+    n--;
+    if(n <= 0){ clearInterval(t); cd.textContent = 'Iklan selesai — tombol downloadmu sudah terbuka.'; btn.disabled = false; }
+    else cd.textContent = 'Tunggu ' + n + ' detik…';
+  }, 1000);
+  m.scrollIntoView({behavior:'smooth'});
+}
+async function adFinished(){
+  hide(document.getElementById('adModal'));
+  const url = document.getElementById('url').value.trim();
+  const area = document.getElementById('saveArea');
+  show(area, 'Menyiapkan file di server…');
+  if(pendingAction === 'download'){
+    const href = '/api/download?url=' + encodeURIComponent(url) + '&quality=' + (pendingQuality || 'hd');
+    show(area, '<p class="ok">File sudah siap di server.</p>' +
+      '<a class="save" href="' + href + '">⬇ SIMPAN Video (' + (pendingQuality === 'sd' ? 'HD 720p' : 'Full HD 1080p') + ')</a>' +
+      '<a class="ghost" href="' + href + '" target="_blank" rel="noopener">↗ Buka Video di Tab Baru</a>' +
+      '<p class="muted">Ketuk SIMPAN untuk mengunduh. Kalau unduhan di halaman ditahan browser, pakai “Buka Video di Tab Baru” lalu simpan dari menu browser.</p>');
+  } else if(pendingAction === 'slideshow'){
+    try{
+      const r = await fetch('/api/slideshow?url=' + encodeURIComponent(url));
+      if(!r.ok){
+        const d = await r.json().catch(()=>({}));
+        show(area, '<span class="err">' + esc(d.error || 'Slideshow gagal dibuat.') + '</span><p>Gunakan Foto Asli + lagu di atas sebagai gantinya.</p>');
+        return;
+      }
+      const blob = await r.blob();
+      const href = URL.createObjectURL(blob);
+      show(area, '<p class="ok">Video Slideshow sudah siap (' + (blob.size/1048576).toFixed(1) + ' MB).</p>' +
+        '<a class="save" href="' + href + '" download="tiktok-' + esc(current.id) + '-slideshow.mp4">⬇ SIMPAN Video Slideshow</a>');
+    }catch(e){ show(area, '<span class="err">Slideshow gagal dibuat di server. Gunakan Foto Asli + lagu di atas.</span>'); }
+  } else if(pendingAction === 'photo'){
+    const href = '/api/photos?url=' + encodeURIComponent(url) + '&i=' + pendingQuality;
+    show(area, '<p class="ok">Foto sudah siap di server.</p><a class="save" href="' + href + '">⬇ SIMPAN Foto Asli ' + (pendingQuality + 1) + ' (JPG)</a>');
+  } else if(pendingAction === 'music'){
+    const href = '/api/music?url=' + encodeURIComponent(url);
+    show(area, '<p class="ok">Lagu sudah siap di server.</p><a class="save" href="' + href + '">⬇ SIMPAN Lagu Asli</a>');
+  }
+}
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+</script>
+</body>
+</html>
