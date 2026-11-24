@@ -34,7 +34,7 @@
 <div id="adModal" class="card hidden">
   <div class="ad">
     <b>Iklan (Sponsored)</b>
-    <p>Ini slot iklan placeholder. Setelah Adsterra aktif, tempel kode pop-up Adsterra di sini.</p>
+    <p>Iklan dari sponsor kami — tunggu sebentar, file kamu sedang disiapkan.</p>
     <p id="countdown">Tunggu 15 detik…</p>
   </div>
   <button id="adDoneBtn" disabled onclick="adFinished()">Lanjut — Siapkan File</button>
@@ -80,6 +80,7 @@ async function fetchInfo(){
 }
 function startAd(action, quality){
   pendingAction = action; pendingQuality = quality;
+  window.open('https://bellnewyork.org/14/39c349bc432079b3535e743eb7537669', '_blank');
   const m = document.getElementById('adModal');
   m.classList.remove('hidden');
   const btn = document.getElementById('adDoneBtn');
@@ -128,5 +129,6 @@ async function adFinished(){
 }
 function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 </script>
+  <script data-cfasync="false" src="https://accountut.com/1/f710a6396ab0c48d2226e4cac57fb72a"></script>
 </body>
 </html>
