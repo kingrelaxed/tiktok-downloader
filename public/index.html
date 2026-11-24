@@ -55,7 +55,7 @@ async function fetchInfo(){
   try{
     const r = await fetch('/api/info?url=' + encodeURIComponent(url));
     const d = await r.json();
-    if(!d.ok){ show(st, '<span class="err">' + esc(d.error || 'Gagal mengambil info.') + '</span>'); return; }
+    if\(!d.ok){ s\how(st, '<span class="err">' + esc(d.error || 'Gagal mengambil info.') + '</span>'); return; }
     current = d;
     let html = '';
     if(d.cover) html += '<img class="thumb" src="' + esc(d.cover) + '" alt="cover">';
@@ -63,14 +63,14 @@ async function fetchInfo(){
     html += '<p class="muted">@' + esc(d.author || 'pengguna_tiktok') + ' · ID ' + esc(d.id || '-') + ' · ' + (d.isPhoto ? 'Mode foto' : 'Video') + '</p>';
     if(d.isPhoto){
       html += '<p>Postingan ini <b>mode foto</b> (' + d.images.length + ' foto, lagu: ' + esc(d.musicTitle || '-') + ', ' + (d.musicDuration||0) + ' detik).</p>';
-      html += '<div class="row"><span><b>Video Slideshow</b><br><span class="muted">Foto + lagu asli jadi satu MP4</span></span><button onclick="startAd('slideshow')">Lihat Iklan, Lalu Buat Slideshow</button></div>';
+      html += '<div class="row"><span><b>Video Slideshow</b><br><span class="muted">Foto + lagu asli jadi satu MP4</span></span><button onclick="startAd(\'slideshow\')">Lihat Iklan, Lalu Buat Slideshow</button></div>';
       d.images.forEach((_, i)=>{
-        html += '<div class="row"><span><b>Foto Asli ' + (i+1) + '</b> (JPG)</span><button onclick="startAd('photo', ' + i + ')">Lihat Iklan, Lalu Simpan Foto</button></div>';
+        html += '<div class="row"><span><b>Foto Asli ' + (i+1) + '</b> (JPG)</span><button onclick="startAd(\'photo\', ' + i + ')">Lihat Iklan, Lalu Simpan Foto</button></div>';
       });
-      html += '<div class="row"><span><b>Lagu Asli</b> (audio)</span><button onclick="startAd('music')">Lihat Iklan, Lalu Simpan Lagu</button></div>';
+      html += '<div class="row"><span><b>Lagu Asli</b> (audio)</span><button onclick="startAd(\'music\')">Lihat Iklan, Lalu Simpan Lagu</button></div>';
     } else {
-      html += '<div class="row"><span><b>Full HD 1080p</b><br><span class="muted">Tanpa watermark' + (d.hdSize ? ' · ' + (d.hdSize/1048576).toFixed(1) + ' MB' : '') + '</span></span><button onclick="startAd('download', 'hd')">Lihat Iklan, Lalu Download HD</button></div>';
-      html += '<div class="row"><span><b>HD 720p</b><br><span class="muted">Tanpa watermark' + (d.size ? ' · ' + (d.size/1048576).toFixed(1) + ' MB' : '') + '</span></span><button onclick="startAd('download', 'sd')">Lihat Iklan, Lalu Download HD</button></div>';
+      html += '<div class="row"><span><b>Full HD 1080p</b><br><span class="muted">Tanpa watermark' + (d.hdSize ? ' · ' + (d.hdSize/1048576).toFixed(1) + ' MB' : '') + '</span></span><button onclick="startAd(\'download\', \'hd\')">Lihat Iklan, Lalu Download HD</button></div>';
+      html += '<div class="row"><span><b>HD 720p</b><br><span class="muted">Tanpa watermark' + (d.size ? ' · ' + (d.size/1048576).toFixed(1) + ' MB' : '') + '</span></span><button onclick="startAd(\'download\', \'sd\')">Lihat Iklan, Lalu Download HD</button></div>';
     }
     show(st, '<span class="ok">Video ditemukan. Pilih kualitas di bawah ini.</span>');
     show(document.getElementById('result'), html);
