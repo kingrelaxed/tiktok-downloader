@@ -55,7 +55,7 @@ async function fetchInfo(){
   try{
     const r = await fetch('/api/info?url=' + encodeURIComponent(url));
     const d = await r.json();
-    if\(!d.ok){ s\how(st, '<span class="err">' + esc(d.error || 'Gagal mengambil info.') + '</span>'); return; }
+    if(!d.ok){ show(st, '<span class="err">' + esc(d.error || 'Gagal mengambil info.') + '</span>'); return; }
     current = d;
     let html = '';
     if(d.cover) html += '<img class="thumb" src="' + esc(d.cover) + '" alt="cover">';
